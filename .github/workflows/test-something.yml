@@ -1,5 +1,10 @@
-name: Deploy React App
-on: workflow_dispatch
+name: Test React App
+on: 
+  push: 
+    branches: 
+    - main 
+    - features 
+    - form/feature
 jobs:
   test-process:
     runs-on: ubuntu-latest
