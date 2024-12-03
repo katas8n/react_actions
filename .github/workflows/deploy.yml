@@ -1,15 +1,28 @@
 name: Deploy React App
-on: push
+on: [push, workflow_dispatch]
 jobs: 
-  test-lint:
+  checkout-git:
     runs-on: ubuntu-latest
     steps: 
       - name: Get repository code
         uses: actions/checkout@v4
+        
+  install-dependencies:
+    runs-on: ubuntu-latest
+    steps: 
       - name: Install project dependencies 
         run: npm ci 
+      
+  test-lint:
+    runs-on: ubuntu-latest
+    steps: 
+     
       - name: Lint project 
         run: npm run lint
+
+  deploy: 
+    runs-on: ubuntu-latest
+    steps: 
       - name: Build project 
         run: npm run build
       - name: Deploy 
