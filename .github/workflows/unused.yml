@@ -1,42 +1,37 @@
-name: Deploy React App
-on: push
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get repository code
-        uses: actions/checkout@v4
-      - name: Install project dependencies
-        run: npm ci
-      - name: Lint project
-        run: npm run lint
-      - name: Lint
-        run: |
-          echo Linted ...
-  build:
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get repository code
-        uses: actions/checkout@v4
-      - name: Install project dependencies
-        run: npm ci
-      - name: Build project
-        run: npm run build
-      - name: Deploy
-        run: |
-          echo Has built ...
+name: Deploy in Netlify 
 
-  deploy:
-    needs: build
+on: 
+  push: 
+    branches: 
+      - main 
+  workflow_dispatch
+
+jobs: 
+  deploy: 
     runs-on: ubuntu-latest
-    steps:
-      - name: Get repository code
-        uses: actions/checkout@v4
-      - name: Install project dependencies
-        run: npm ci
-      - name: Build project
-        run: npm run build
-      - name: Deploy
-        run: |
-          echo Deploying ...
+    steps: 
+        - name: Get repository code
+          uses: actions/checkout@v4
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: 18
+            cache: "npm"
+
+        - name: Install project dependencies
+          run: npm ci
+
+        - name: Build project 
+          run: npm run build
+
+        - name: Deploy to Netlify
+          uses: South-Paw/action-netlify-cli@v2
+
+        with:
+          args: 'deploy --json --dir \"./dist\" --message \"draft [${{ github.sha }}]\"'
+
+        env:
+          NETLIFY_AUTH_TOKEN: nfp_N9zvLa1pZGwedbxPVuiDMtWeHRMsbMUnfb48
+          NETLIFY_SITE_ID: bf3171c5-e457-4b3c-9002-5ed2b5b75c43
+          dir: "./dist"
